@@ -1,6 +1,6 @@
-*
+/*
 
 !.gitignore
-!RIC3D
-!RIC3DFLASH
-!RIC3DMODEM
+!/RIC3D
+!/RIC3DFLASH
+!/RIC3DMODEM
