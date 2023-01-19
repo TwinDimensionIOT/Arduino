@@ -33,6 +33,7 @@
 
 #define SIM_SELECT 9
 
+#define VCCSENSE A0
 #define TEMPSENSOR A1
 
 void TurnOnLeds(bool ledstate1,bool ledstate2, bool ledstate3 ,bool ledstate4);

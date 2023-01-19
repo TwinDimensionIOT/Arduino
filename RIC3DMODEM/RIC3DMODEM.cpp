@@ -95,22 +95,26 @@ void ConnectMQTTClient()
 }  
 
 
-void PublishData(float temp)
+void PublishData(char* key, char* value)
 {
-    char* str = malloc(30);
-    char* strtemp = malloc(10);
-    Serial3.write("AT+QMTPUBEX=0,0,0,0,v1/devices/me/telemetry,25\r\n");
+    char strpayloadlen[5];
+    int payloadlen = 9 + strlen(key) + strlen(value);
+    // the last parameter defines the maximum data to send (maximum value 1500)
+    Serial3.write("AT+QMTPUBEX=0,0,0,0,v1/devices/me/telemetry,");
+    Serial3.write(itoa(payloadlen, strpayloadlen,10));
+    Serial3.write("\r\n");
     Serial3.flush();
     WaitForAnswer(">");
-    strcpy(str,"{\"Temperatura\":\"");
-    dtostrf(temp, 4, 2, strtemp);
-    strcat(str,strtemp);
-    strcat(str,"\"}\r\n");
-    Serial3.write(str);
+    Serial3.write("{\"");
+    Serial3.write(key);
+    Serial3.write("\":\"");
+    Serial3.write(value);
+    Serial3.write("\"}\r\n");
     Serial3.flush();
     WaitForAnswer("QMTPUBEX: 0,0,0");  
-    free(str);
-    free(strtemp);
+
+    //dtostrf(temp, 4, 2, strtemp);
+    //strcat(str,strtemp);
 }
 
 void WaitForAnswer(char* ans)
@@ -119,6 +123,7 @@ void WaitForAnswer(char* ans)
     char str[2];
     str[1] = 0;
     char* ret;
+    char* err;
     int done = 0;
     strcpy(buffer,"");
     while(done == 0) 
@@ -128,12 +133,20 @@ void WaitForAnswer(char* ans)
                 str[0] = Serial3.read();
                 strcat(buffer,str);
                 ret = strstr(buffer,ans);
+                err = strstr(buffer,"ERROR");
+
             }
-            if(ret != NULL)
+            if(ret != NULL || err != NULL)
             {
                 done = 1;
                 Serial.write(buffer);
                 Serial.flush();
             }
+/*             if(err != NULL)
+            {
+                done = 1;
+                Serial.write(buffer);
+                Serial.flush();
+            } */
         } 
 }
