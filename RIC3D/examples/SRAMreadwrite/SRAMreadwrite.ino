@@ -14,8 +14,8 @@ void setup()
   // Set the chip select of the Flash to high, and write protect of the sram to high
   pinMode(53,OUTPUT);
   digitalWrite(53,HIGH);
-  DDRH |= B00000100;
-  PORTH |= B00000100;
+  pinMode(76,OUTPUT);
+  digitalWrite(76,HIGH);
   ram.begin();
   Serial.begin(115200);
 }
