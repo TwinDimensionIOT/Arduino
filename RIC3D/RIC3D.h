@@ -40,4 +40,28 @@ void TurnOnLeds(bool ledstate1,bool ledstate2, bool ledstate3 ,bool ledstate4);
 
 void SetLedState(bool ledstate, int lednumber);
 
+class RIC3D
+{
+    protected:
+    int DigitalValues[8];
+    int AnalogValues[4];
+    float Temperature;
+    float Voltage;
+
+    public:
+
+    RIC3D();
+
+    void init();
+
+    void ReadDigitalInputs();
+    void ReadAnalogInputs();
+    void ReadTemperature();
+    void ReadVoltage();
+
+    void ReadAll();
+
+};
+
+
 #endif

@@ -42,13 +42,13 @@ void setup()
 
 void loop() 
 {
-    delay(10000);
-    sensorValue = analogRead(TEMPSENSOR);
-    temperature = (float(sensorValue)*25/100)-60;
-    sensorValue = analogRead(VCCSENSE);
-    voltage = (float(sensorValue)*(25*11)/10000);
-    dtostrf(temperature, 4, 2, str);
-    PublishData("Temperatura",str);
-    dtostrf(voltage, 4, 2, str);
-    PublishData("Tension",str);
+  delay(10000);
+  sensorValue = analogRead(TEMPSENSOR);
+  temperature = (float(sensorValue)*25/100)-60;
+  sensorValue = analogRead(VCCSENSE);
+  voltage = (float(sensorValue)*(25*11)/10000);
+  dtostrf(temperature, 4, 2, str);
+  PublishData("Temperatura",str);
+  dtostrf(voltage, 4, 2, str);
+  PublishData("Tension",str);
 }

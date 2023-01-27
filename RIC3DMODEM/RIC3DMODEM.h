@@ -20,8 +20,34 @@ void SetTCPClient(char* IP, char* port);
 
 void ConnectMQTTClient();
 
+void SubscribeToTopic();
+
 void PublishData(char* key, char* value);
 
 void WaitForAnswer(char* ans);
+
+
+
+class Conf
+{
+    public:
+    int conf_di;
+    int conf_ai;
+    int conf_t;
+    int conf_v;
+    Conf(int di, int ai, int t, int v);
+};
+
+class RIC3DMODEM: public RIC3D
+{
+    private:
+    Conf configuration;
+
+    public:
+
+    RIC3DMODEM(Conf);
+
+    PublishAll();
+};
 
 #endif

@@ -8,7 +8,6 @@ void setup() {
   analogReference(INTERNAL2V56);
   // Initialize Serial port
   Serial.begin(115200);
-  pinMode(LED1,OUTPUT);
 }
 
 void loop() {

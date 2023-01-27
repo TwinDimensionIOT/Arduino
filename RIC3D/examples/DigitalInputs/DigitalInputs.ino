@@ -2,20 +2,14 @@
 
 int DigitalValues[8];
 
+//this initializes the device setting the corresponding inputs and outputs
+RIC3D device();
+
 void setup() 
 {
   // Initialize Serial port
   Serial.begin(115200);
 
-  // Set Digital inputs as pull-ups
-  pinMode(DI0,INPUT_PULLUP);
-  pinMode(DI1,INPUT_PULLUP);
-  pinMode(DI2,INPUT_PULLUP);
-  pinMode(DI3,INPUT_PULLUP);
-  pinMode(DI4,INPUT_PULLUP);
-  pinMode(DI5,INPUT_PULLUP);
-  pinMode(DI6,INPUT_PULLUP);
-  pinMode(DI7,INPUT_PULLUP);
 }
 
 void loop() 

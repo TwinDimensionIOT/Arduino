@@ -1,17 +1,13 @@
 #include <RIC3D.h>
 
+//this initializes the device setting the corresponding inputs and outputs
+RIC3D device();
 
 void setup() 
 {
   // Initialize Serial port
   Serial.begin(115200);
-
-  // Set the inputs and outputs acordingly
-  pinMode(DO0, OUTPUT);
-  pinMode(DO0FB, INPUT_PULLUP);
-  pinMode(DO1, OUTPUT);
-  pinMode(DO1FB, INPUT_PULLUP);
-
+  
 }
 
 

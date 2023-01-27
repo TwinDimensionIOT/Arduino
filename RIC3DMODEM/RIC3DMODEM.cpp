@@ -1,4 +1,3 @@
-
 #include "RIC3DMODEM.h"
 #include <string.h>
 
@@ -94,6 +93,12 @@ void ConnectMQTTClient()
     WaitForAnswer("QMTCONN: 0,0,0");
 }  
 
+void SubscribeToTopic()
+{
+    Serial3.write("AT+QMTSUB=0,1,v1/devices/me/rpc/request/+,\r\n");
+    Serial3.flush();
+    WaitForAnswer("QMTSUB: 0,1,0,0");
+}
 
 void PublishData(char* key, char* value)
 {
@@ -150,3 +155,58 @@ void WaitForAnswer(char* ans)
             } */
         } 
 }
+
+Conf::Conf(int di,int ai,int t,int v)
+{
+    this->conf_di = di;
+    this->conf_ai = ai;
+    this->conf_t = t;
+    this->conf_v = v;
+}
+
+RIC3DMODEM::RIC3DMODEM(Conf config):configuration(config)
+{
+  this->configuration = config;
+  init();
+}
+
+
+
+RIC3DMODEM::PublishAll()
+{
+    ReadAll();
+    if(this->configuration.conf_di)
+    {
+        char* str = malloc(7);
+        for(int i = 0; i<8 ; i++)
+        {
+            PublishData(Dict[i],itoa(this->DigitalValues[i], str, 2));
+        }
+        free(str);
+    }
+    if(this->configuration.conf_ai)
+    {
+        char* str = malloc(7);
+        for(int i = 0; i<4 ; i++)
+        {
+            dtostrf(this->AnalogValues[i]/40, 4, 2, str);
+            PublishData(Dict[i+8],str);
+        }
+        free(str);
+    }
+    if(this->configuration.conf_t)
+    {
+        char* str = malloc(7);
+        dtostrf(this->Temperature, 4, 2, str);
+        PublishData("Temperatura",str);
+        free(str);
+    }
+    if(this->configuration.conf_v)
+    {
+        char* str = malloc(7);
+        dtostrf(this->Voltage, 4, 2, str);
+        PublishData("Tension",str);
+        free(str);
+    }
+}
+

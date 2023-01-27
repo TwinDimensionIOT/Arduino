@@ -1,11 +1,10 @@
 #include <RIC3D.h>
 
+//this initializes the device setting the corresponding inputs and outputs
+RIC3D device();
+
 void setup() {
-  // Initialize the digital pins as outputs.
-  pinMode(LED1,OUTPUT);
-  pinMode(LED2,OUTPUT);
-  pinMode(LED3,OUTPUT);
-  pinMode(LED4,OUTPUT);  
+
 }
 
 
@@ -21,6 +20,5 @@ void loop() {
   digitalWrite(LED3,LOW);
   digitalWrite(LED4,LOW);
   delay(1000);
-  
   
 }
