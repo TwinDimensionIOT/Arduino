@@ -26,7 +26,7 @@ void PublishData(char* key, char* value);
 
 void WaitForAnswer(char* ans);
 
-
+int ReadRPC();
 
 class Conf
 {
