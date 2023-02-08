@@ -95,7 +95,7 @@ void ConnectMQTTClient()
 
 void SubscribeToTopic()
 {
-    Serial3.write("AT+QMTSUB=0,1,v1/devices/me/rpc/request/+,\r\n");
+    Serial3.write("AT+QMTSUB=0,1,v1/devices/me/rpc/request/+,0\r\n");
     Serial3.flush();
     WaitForAnswer("QMTSUB: 0,1,0,0");
 }
@@ -155,6 +155,40 @@ void WaitForAnswer(char* ans)
             } */
         } 
 }
+
+int ReadRPC(char* key)
+{
+    char buffer[64];
+    char str[2];
+    str[1] = 0;
+    char* ret;
+    int result = 0;
+    int timeout = 0;
+    int done = 0;
+    strcpy(buffer,"");
+    while(done == 0) 
+    {
+        if (Serial3.available())
+        {
+            str[0] = Serial3.read();
+            strcat(buffer,str);
+            ret = strstr(buffer,key);
+        }
+        if(ret != NULL)
+        {
+            done = 1;
+            Serial.write(buffer);
+            Serial.flush();
+        }
+        if(timeout > 5000)
+        {
+            done = 1;
+            result = 2;
+        }
+        timeout += 1;
+    }
+}
+
 
 Conf::Conf(int di,int ai,int t,int v)
 {
