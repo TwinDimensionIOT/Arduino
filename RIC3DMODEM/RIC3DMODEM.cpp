@@ -84,6 +84,9 @@ void ConnectMQTTClient()
 
     Serial3.write("AT+QMTCFG=pdpcid,0,1\r\n");
     Serial3.flush();
+    WaitForAnswer("OK\r\n");
+    Serial3.write("AT+QMTCFG=recv/mode,0,1,0\r\n");
+    Serial3.flush();
     WaitForAnswer("OK\r\n");    
     Serial3.write("AT+QMTOPEN=0,tdata.tesacom.net,1883\r\n");
     Serial3.flush();
@@ -97,7 +100,7 @@ void SubscribeToTopic()
 {
     Serial3.write("AT+QMTSUB=0,1,v1/devices/me/rpc/request/+,0\r\n");
     Serial3.flush();
-    WaitForAnswer("QMTSUB: 0,1,0,0");
+    WaitForAnswer("QMTSUB: 0");
 }
 
 void PublishData(char* key, char* value)
@@ -156,36 +159,101 @@ void WaitForAnswer(char* ans)
         } 
 }
 
-int ReadRPC(char* key)
+int CheckMessages()
 {
+    Serial3.write("AT+QMTRECV?\r\n");
+    Serial3.flush();
     char buffer[64];
     char str[2];
+    int recmessages = 0;
     str[1] = 0;
     char* ret;
-    int result = 0;
-    int timeout = 0;
+    char* ok;
+    char aux;
     int done = 0;
     strcpy(buffer,"");
     while(done == 0) 
-    {
-        if (Serial3.available())
         {
-            str[0] = Serial3.read();
-            strcat(buffer,str);
-            ret = strstr(buffer,key);
+            if (Serial3.available())
+            {
+                str[0] = Serial3.read();
+                strcat(buffer,str);
+                ok = strstr(buffer,"OK");
+
+            }
+            if(ok != NULL)
+            {
+                ret = strstr(buffer,"QMTRECV:");
+                for(int i = 0; i<5 ; i++)
+                {
+                    aux = ret[2 * i+9];
+                    recmessages += int(aux)-48;
+                } 
+                done = 1;
+                //Serial.write(buffer);
+                //Serial.flush();
+            }
         }
-        if(ret != NULL)
+    return recmessages;
+}
+
+void ReadRPC()
+{
+    int recmessages;
+    bool relay0state;
+    bool relay1state;
+    recmessages = CheckMessages();
+
+   if(recmessages > 0)
+   {
+        for(int i = 0; i<5 ; i++)
         {
-            done = 1;
-            Serial.write(buffer);
-            Serial.flush();
-        }
-        if(timeout > 5000)
-        {
-            done = 1;
-            result = 2;
-        }
-        timeout += 1;
+        Serial3.write("AT+QMTRECV=0,");
+        char aux = char(i+48);
+        Serial3.write(aux);
+        Serial3.write("\r\n");
+        Serial3.flush();
+        char buffer[120];
+        char str[2];
+        str[1] = 0;
+        char* ret;
+        char* ok;
+        int done = 0;
+        strcpy(buffer,"");
+        while(done == 0) 
+            {
+                if (Serial3.available())
+                {
+                    str[0] = Serial3.read();
+                    strcat(buffer,str);
+                    ok = strstr(buffer,"OK");
+                }
+                if(ok != NULL)
+                {
+                    ret = strstr(buffer,"Rele0");
+                    if(ret != NULL)
+                    {
+                        if (ret[16] == 't')
+                            relay0state = 1;
+                        else  
+                            relay0state = 0;      
+                    }
+                    ret = strstr(buffer,"Rele1");
+                    if(ret != NULL)
+                    {
+                        if (ret[16] == 't')
+                            relay1state = 1;
+                        else  
+                            relay1state = 0;      
+                    }
+                    done = 1;
+                    Serial.write(buffer);
+                    Serial.flush();
+                }
+            } 
+        }   
+    digitalWrite(DO0,relay0state);
+    digitalWrite(DO1,relay1state);
     }
 }
 

@@ -26,7 +26,9 @@ void PublishData(char* key, char* value);
 
 void WaitForAnswer(char* ans);
 
-int ReadRPC();
+void ReadRPC();
+
+int CheckMessages();
 
 class Conf
 {
@@ -44,6 +46,8 @@ class RIC3DMODEM: public RIC3D
     Conf configuration;
 
     public:
+
+    bool DebugMode;
 
     RIC3DMODEM(Conf);
 
