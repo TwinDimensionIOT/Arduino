@@ -79,7 +79,7 @@ void SetTCPClient(char* IP, char* port)
 }
 
 
-void ConnectMQTTClient(char* client)
+void ConnectMQTTClient(char* client_id)
 {
     Serial3.write("AT+QMTCFG=pdpcid,0,1\r\n");
     Serial3.flush();
@@ -90,12 +90,13 @@ void ConnectMQTTClient(char* client)
     Serial3.write("AT+QMTOPEN=0,tdata.tesacom.net,1883\r\n");
     Serial3.flush();
     WaitForAnswer("QMTOPEN: 0,0\r\n");
-    char str[60];
+    char str[80];
     strcpy(str,"AT+QMTCONN=0,client,");
-    strcat(str,client);
+    strcat(str,client_id);
     strcat(str,"\r\n");
     Serial3.write(str);
     Serial3.flush();
+    WaitForAnswer("QMTCONN: 0,0,0");
 }  
 
 void SubscribeToTopic()
@@ -206,8 +207,8 @@ void ReadRPC()
     bool relay1state;
     recmessages = CheckMessages();
 
-   if(recmessages > 0)
-   {
+    if(recmessages > 0)
+    {
         for(int i = 0; i<5 ; i++)
         {
         Serial3.write("AT+QMTRECV=0,");

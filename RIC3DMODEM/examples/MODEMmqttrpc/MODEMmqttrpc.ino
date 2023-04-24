@@ -19,7 +19,7 @@ const char apn[]      = "internet.gprs.unifon.com.ar";
 const char gprsUser[] = "wap";
 const char gprsPass[] = "wap";
 
-const char client[]   = "l5CQih08cPmpXfptvMBI";
+const char client_id[]   = "l5CQih08cPmpXfptvMBI"; // aca se debe poner el id del device de tdata
 
 Conf protocol(0,0,1,1);
 
@@ -43,7 +43,7 @@ void setup()
   SerialMon.println(" Opening MQTT service ");
   CreatePDPContext(apn, gprsUser,  gprsPass);
   ActivatePDPContext();
-  ConnectMQTTClient(client);
+  ConnectMQTTClient(client_id);
   SubscribeToTopic();
 
   readInterval.start(1000, AsyncDelay::MILLIS);
@@ -55,14 +55,5 @@ void loop()
   {
     readInterval.restart();
     ReadRPC();  
-  }
-  if(!digitalRead(MODEM_STATUS))
-  {
-    if (SerialAT.available()) {
-      SerialMon.write(SerialAT.read());
-    }
-    if (SerialMon.available()) {
-      SerialAT.write(SerialMon.read());
-    }
   }
 }
