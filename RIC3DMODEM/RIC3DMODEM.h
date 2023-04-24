@@ -18,7 +18,7 @@ void ActivatePDPContext();
 
 void SetTCPClient(char* IP, char* port);
 
-void ConnectMQTTClient();
+void ConnectMQTTClient(char* client);
 
 void SubscribeToTopic();
 

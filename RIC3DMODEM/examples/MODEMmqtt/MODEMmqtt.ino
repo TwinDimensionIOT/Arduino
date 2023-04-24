@@ -15,6 +15,8 @@ const char apn[]      = "internet.gprs.unifon.com.ar";
 const char gprsUser[] = "wap";
 const char gprsPass[] = "wap";
 
+const char client[]   = "l5CQih08cPmpXfptvMBI";
+
 int sensorValue = 0;
 float temperature = 0;
 float voltage = 0;
@@ -33,11 +35,10 @@ void setup()
   ModemTurnOn();
   SerialAT.begin(rate);
   analogReference(INTERNAL2V56);
-
   SerialMon.println(" Opening MQTT service ");
   CreatePDPContext(apn, gprsUser,  gprsPass);
   ActivatePDPContext();
-  ConnectMQTTClient();
+  ConnectMQTTClient(client);
 }
 
 void loop() 

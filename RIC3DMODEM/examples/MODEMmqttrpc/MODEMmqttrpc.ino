@@ -19,6 +19,8 @@ const char apn[]      = "internet.gprs.unifon.com.ar";
 const char gprsUser[] = "wap";
 const char gprsPass[] = "wap";
 
+const char client[]   = "l5CQih08cPmpXfptvMBI";
+
 Conf protocol(0,0,1,1);
 
 RIC3DMODEM device(protocol);
@@ -41,7 +43,7 @@ void setup()
   SerialMon.println(" Opening MQTT service ");
   CreatePDPContext(apn, gprsUser,  gprsPass);
   ActivatePDPContext();
-  ConnectMQTTClient();
+  ConnectMQTTClient(client);
   SubscribeToTopic();
 
   readInterval.start(1000, AsyncDelay::MILLIS);
