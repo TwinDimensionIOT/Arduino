@@ -1,7 +1,7 @@
 #include <RIC3D.h>
 #include <RIC3DMODEM.h>
-#include <AsyncDelay.h>
 
+RIC3D device();
 
 #define SerialMon Serial
 
@@ -10,8 +10,6 @@
 // Module baud rate
 uint32_t rate = 115200;  
 
-AsyncDelay readInterval;
-
 // Select SIM Card (0 = right, 1 = left)
 bool sim_selected = 1; 
 
@@ -19,15 +17,16 @@ const char apn[]      = "internet.gprs.unifon.com.ar";
 const char gprsUser[] = "wap";
 const char gprsPass[] = "wap";
 
-const char client_id[]   = "l5CQih08cPmpXfptvMBI"; // aca se debe poner el id del device de tdata
+const char mqtt_ip[] = "tdata.tesacom.net";
+const char mqtt_port[] = "1883";
 
-Conf protocol(0,0,1,1);
+const char user_name[] = "l5CQih08cPmpXfptvMBI"; // aca se debe poner el id del device de tdata
 
-RIC3DMODEM device(protocol);
+int interval = 1000;
+long old_millis = 0;
 
 void setup() 
 {
-
   SerialMon.begin(115200);
   SerialMon.println(F("***********************************************************"));
   SerialMon.println(F(" Initializing Modem"));
@@ -35,25 +34,35 @@ void setup()
   digitalWrite(SIM_SELECT,sim_selected);
   SerialMon.print(" Sim selected is the one on the ");
   SerialMon.println(sim_selected?"left":"right");
+  ModemBegin(&SerialAT,&SerialMon);
   ModemTurnOff();
   ModemTurnOn();
   SerialAT.begin(rate);
   analogReference(INTERNAL2V56);
-
   SerialMon.println(" Opening MQTT service ");
-  CreatePDPContext(apn, gprsUser,  gprsPass);
+  if(CreatePDPContext(apn, gprsUser,  gprsPass))
+  {
+    SerialMon.println("Error creating PDP context");
+  }
   ActivatePDPContext();
-  ConnectMQTTClient(client_id);
+  if(ConnectMQTTClient(user_name,mqtt_ip,mqtt_port))
+  {
+    SerialMon.println("Error connecting to tdata");
+  }
   SubscribeToTopic();
-
-  readInterval.start(1000, AsyncDelay::MILLIS);
+  digitalWrite(LED4,HIGH);
 }
+
 
 void loop() 
 {
-  if (readInterval.isExpired()) 
+  if((millis() - old_millis) > interval)
   {
-    readInterval.restart();
-    ReadRPC();  
+    old_millis = millis();
+    ReadRPC();
+    SerialMon.print("Rele 0: ");
+    SerialMon.println(digitalRead(DO0FB));
+    SerialMon.print("Rele 1: ");
+    SerialMon.println(digitalRead(DO1FB));  
   }
 }

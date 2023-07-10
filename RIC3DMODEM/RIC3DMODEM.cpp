@@ -118,6 +118,7 @@ int DisconnectMQTTClient() {
 }
 
 int SubscribeToTopic() {
+  gMonitorSerial->println(F("SubscribeToTopic"));
   int result;
   gModemSerial->print("AT+QMTSUB=0,1,\"v1/devices/me/rpc/request/+\",0\r\n");
   gModemSerial->flush();
@@ -156,8 +157,6 @@ int PublishData(char* key, char* value) {
     gModemSerial->flush();
     if (result = WaitForAnswer("+QMTPUB: 0,0,0")) return result;
   }
-  //dtostrf(temp, 4, 2, strtemp);
-  //strcat(str,strtemp);
   return result;
 }
 
@@ -224,7 +223,7 @@ void ReadRPC() {
       gModemSerial->print(aux);
       gModemSerial->print("\r\n");
       gModemSerial->flush();
-      char buffer[120];
+      char buffer[150];
       char str[2];
       str[1] = 0;
       char* ret;
@@ -259,7 +258,11 @@ void ReadRPC() {
       }
     }
     digitalWrite(DO0, relay0state);
+    gMonitorSerial->print("\n relay 0:");
+    gMonitorSerial->println(relay0state);
     digitalWrite(DO1, relay1state);
+    gMonitorSerial->print("\n rely 1:");
+    gMonitorSerial->println(relay1state);
   }
 }
 

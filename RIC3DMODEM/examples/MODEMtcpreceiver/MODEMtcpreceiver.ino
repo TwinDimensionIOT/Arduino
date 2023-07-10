@@ -1,6 +1,8 @@
 #include <RIC3D.h>
 #include <RIC3DMODEM.h>
 
+RIC3D device();
+
 #define SerialMon Serial
 
 #define SerialAT Serial3
@@ -27,15 +29,19 @@ void setup()
   digitalWrite(SIM_SELECT,sim_selected);
   SerialMon.print(" Sim selected is the one on the ");
   SerialMon.println(sim_selected?"left":"right");
+  ModemBegin(&SerialAT,&SerialMon);
   ModemTurnOff();
   ModemTurnOn();
-
   SerialAT.begin(rate);
-
-  SerialMon.println(" Setting up TCP client service in transparent mode");
-  CreatePDPContext(apn, gprsUser,  gprsPass);
+  if(CreatePDPContext(apn, gprsUser,  gprsPass))
+  {
+    SerialMon.println("Error creating PDP context");
+  }
   ActivatePDPContext();
-  SetTCPClient(server, port);
+  if(SetTCPClient(server, port))
+  {
+    SerialMon.println("Error in TCP connection");
+  }
 }
 
 void loop() 
