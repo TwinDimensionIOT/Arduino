@@ -33,10 +33,10 @@ void SetLedState(bool ledstate, int lednumber)
 
 RIC3D::RIC3D()
 {
-  init();
+
 }
 
-void RIC3D::init()
+void RIC3D::begin()
 {
   pinMode(LED1,OUTPUT);
   pinMode(LED2,OUTPUT);

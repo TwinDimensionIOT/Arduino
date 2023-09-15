@@ -28,6 +28,7 @@ void printTwoDigit(int n)
 void readTime(void)
 {
   // Ensure register address is valid
+  sw.enablePullups(true);
   sw.beginTransmission(I2C_ADDRESS);
   sw.write(uint8_t(0)); // Access the first register
   sw.endTransmission();

@@ -1,13 +1,13 @@
 #include <RIC3D.h>
 
 //this initializes the device setting the corresponding inputs and outputs
-RIC3D device();
+RIC3D device;
 
 void setup() 
 {
   // Initialize Serial port
   Serial.begin(115200);
-  
+  device.begin();
 }
 
 

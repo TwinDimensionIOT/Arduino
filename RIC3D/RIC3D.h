@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 
+
 #define LED1 47
 #define LED2 48
 #define LED3 42
@@ -52,7 +53,7 @@ class RIC3D
 
     RIC3D();
 
-    void init();
+    void begin();
 
     void ReadDigitalInputs();
     void ReadAnalogInputs();

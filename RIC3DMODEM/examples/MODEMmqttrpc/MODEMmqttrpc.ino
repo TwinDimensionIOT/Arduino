@@ -1,7 +1,7 @@
 #include <RIC3D.h>
 #include <RIC3DMODEM.h>
 
-RIC3D device();
+RIC3D device;
 
 #define SerialMon Serial
 
@@ -30,6 +30,7 @@ void setup()
   SerialMon.begin(115200);
   SerialMon.println(F("***********************************************************"));
   SerialMon.println(F(" Initializing Modem"));
+  device.begin();
   pinMode(SIM_SELECT,OUTPUT);
   digitalWrite(SIM_SELECT,sim_selected);
   SerialMon.print(" Sim selected is the one on the ");
